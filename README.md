@@ -31,13 +31,16 @@ In this game, you control a car that drives on a three-lane highway. The goal is
 
 ## Authors
 
-- [@Someone-tensai](https://www.github.com/Someone-tensai) [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=black)](https://www.linkedin.com/in/sulav-paudel-5308a6305/) 
+- [@Someone-tensai](https://www.github.com/Someone-tensai)
+  [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=black)](https://www.linkedin.com/in/sulav-paudel-5308a6305/) 
    [![instagram](https://img.shields.io/badge/instagram-0A66C2?style=for-the-badge&logo=instagram&logoColor=black)](https://www.instagram.com/paudelsulav1/)
 
-- [@mythrhyth](https://www.github.com/mythrhyth)[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=black)](https://www.linkedin.com/in/rhythm-bhetwal-957a7826a/)
+- [@mythrhyth](https://www.github.com/mythrhyth)
+  [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=black)](https://www.linkedin.com/in/rhythm-bhetwal-957a7826a/)
     [![instagram](https://img.shields.io/badge/instagram-0A66C2?style=for-the-badge&logo=instagram&logoColor=black)](https://www.instagram.com/_rhythm_.exe/)
 
-- [@_sushil_bhatta](https://www.github.com) [![instagram](https://img.shields.io/badge/instagram-0A66C2?style=for-the-badge&logo=instagram&logoColor=black)](https://www.instagram.com/_sushil_bhatta/)
+- [@_sushil_bhatta](https://www.github.com)
+  [![instagram](https://img.shields.io/badge/instagram-0A66C2?style=for-the-badge&logo=instagram&logoColor=black)](https://www.instagram.com/_sushil_bhatta/)
 
 
 ## Installation Instructions
