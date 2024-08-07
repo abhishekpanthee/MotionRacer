@@ -118,7 +118,6 @@ For support, email info@abhishekpanthee.com.np  rhythmbhetwal77@gmail.com paudel
 
 ## Badges
 
-Add badges from somewhere like:
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
