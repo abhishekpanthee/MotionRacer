@@ -33,7 +33,6 @@ void Game::update(float deltaTime) {
 }
 
 void Game::render() {
-    this->window.clear();
     playerCar.render(this->window);
 
     for (const auto& obstacle : obstacles) {
@@ -43,8 +42,6 @@ void Game::render() {
     for (const auto& powerUp : powerUps) {
         powerUp.render(this->window);
     }
-
-    this->window.display();
 }
 
 void Game::spawnObstacles(float deltaTime) {
@@ -64,10 +61,37 @@ void Game::spawnPowerUps(float deltaTime) {
 void Game::run() {
     sf::Clock clock;
 
-    while (this->window.isOpen()) {
-        float deltaTime = clock.restart().asSeconds();
-        this->processEvents();
-        this->update(deltaTime);
-        this->render();
+while (this->window.isOpen())
+{
+    float deltaTime = clock.restart().asSeconds();
+    this->processEvents();
+    this->window.clear();
+    if (menu.isActive())
+    {
+        std::cout << "Menu Active";
+        bool enterPressed = menu.updateMenu(this->window);
+        menu.drawMenu(this->window);
+        if (enterPressed)
+        {
+
+            int selected = menu.getClickedItem();
+            if (selected == 0)
+            {
+                menu.deactivate();
+                std::cout << "Menu deactivated";
+            }
+            else if (selected == 3)
+            {
+                this->window.close();
+            }
+        }
     }
+        else
+        {
+            this->update(deltaTime);
+            this->render();
+        }
+    this->window.display();
+   
+}
 }
