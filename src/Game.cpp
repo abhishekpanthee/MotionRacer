@@ -59,39 +59,79 @@ void Game::spawnPowerUps(float deltaTime) {
 }
 
 void Game::run() {
-    sf::Clock clock;
-
-while (this->window.isOpen())
-{
-    float deltaTime = clock.restart().asSeconds();
-    this->processEvents();
-    this->window.clear();
-    if (menu.isActive())
+        sf::Clock frame_clock;
+    sf::Clock game_clock;
+    GameState currentState = GameState::MENU;
+    while (this->window.isOpen())
     {
-        std::cout << "Menu Active";
-        bool enterPressed = menu.updateMenu(this->window);
-        menu.drawMenu(this->window);
-        if (enterPressed)
+        float deltaTime = frame_clock.restart().asSeconds();
+        
+        this->processEvents();
+        this->window.clear();
+        switch (currentState)
         {
+        case GameState::MENU:
+        {
+            bool enterPressed = menu.updateMenu(this->window);
+            menu.drawMenu(this->window);
+            if (enterPressed)
+            {
 
-            int selected = menu.getClickedItem();
-            if (selected == 0)
-            {
-                menu.deactivate();
-                std::cout << "Menu deactivated";
+                int selected = menu.getClickedItem();
+                if (selected == 0)
+                {
+                    currentState = GameState::PLAYING;
+                }
+                else if (selected == 1)
+                {
+                    currentState = GameState::HOW_TO_PLAY;
+                }
+                else if (selected == 2)
+                {
+                    currentState = GameState::SETTINGS;
+                }
+                else if (selected == 3)
+                {
+                    this->window.close();
+                }
             }
-            else if (selected == 3)
-            {
-                this->window.close();
-            }
+            break;
         }
-    }
-        else
+        case GameState::PLAYING:
         {
-            this->update(deltaTime);
+            // Code/Functions for What to do when playing
+
+            //Time elapsed after the game started
+            float elapsedTime = game_clock.getElapsedTime().asSeconds();
+            
+            // Still Working on the implementation
+            this->update(deltaTime, elapsedTime);
             this->render();
+            break;
         }
-    this->window.display();
-   
-}
+        case GameState::PAUSED:
+        {
+            // Code/Functions for Paused Condition
+            break;
+        }
+        case GameState::GAME_OVER:
+        {
+            // Code/Functions For Game over
+            break;
+        }
+        case GameState::SETTINGS:
+        {
+            // Code/Functions for settings
+            break;
+        }
+        case GameState::HOW_TO_PLAY:
+        {
+            // Code/Functions for how to play
+            break;
+        }
+        }
+           
+        this->window.display();
+       
+    }
 }
