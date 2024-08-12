@@ -4,10 +4,13 @@
 class PowerUp {
 private:
     sf::Sprite sprite;
-    sf::Texture texture;
+    bool isOffScreen;
+    sf::Vector2u textureSize;
 
 public:
-    PowerUp(const std::string& textureFile, float x, float y);
+    PowerUp(sf::Texture& powerUpTexture);
     void render(sf::RenderWindow& window) const; 
+    void update(float deltaTime);
     sf::FloatRect getBounds() const;
+
 };
