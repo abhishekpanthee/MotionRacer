@@ -9,9 +9,9 @@ Obstacle::Obstacle(sf::Texture& obstacleTexture) {
     obstacleSprite.setTexture(obstacleTexture);
     obstacleSprite.rotate(270);
     float x_position = static_cast<float>(rand() % (800 - 100)); // Random x within window width
-    float y_position = 300.f; // Start just above the screen
+    float y_position = 300.f; 
     obstacleSprite.setPosition(x_position , y_position);
-    sf::Vector2f spriteSize(100.0f, 100.0f); // Assuming your sprite size should be 50x50
+    sf::Vector2f spriteSize(100.0f, 100.0f); 
     obstacleSprite.setScale(spriteSize.x / textureSize.x, spriteSize.y / textureSize.y);
     obstacleTexture.setSmooth(true); // Optional: enables smoothing
     obstacleTexture.setRepeated(false); // Ensure it's not being repeated
