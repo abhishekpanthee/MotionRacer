@@ -8,7 +8,7 @@ class Menu {
 
 private: 
 	int selectedIndex;
-	sf::Text menu[4];
+	sf::Text menu[5];
 	sf::Font font;
 	bool active = true;
 
