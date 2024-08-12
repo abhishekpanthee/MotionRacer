@@ -19,4 +19,5 @@ public:
     sf::FloatRect getBounds() const;
     bool checkCollision(const std::vector<Obstacle>& obstacles);
     bool checkCollision(const std::vector<PowerUp>& powerUps);
+    friend class Game;
 };
