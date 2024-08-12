@@ -17,6 +17,6 @@ public:
     void moveLeft();
     void moveRight();
     sf::FloatRect getBounds() const;
-    void checkCollision(const std::vector<Obstacle>& obstacles);
-    void checkCollision(const std::vector<PowerUp>& powerUps);
+    bool checkCollision(const std::vector<Obstacle>& obstacles);
+    bool checkCollision(const std::vector<PowerUp>& powerUps);
 };
