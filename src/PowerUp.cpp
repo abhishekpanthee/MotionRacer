@@ -1,20 +1,38 @@
 #include "PowerUp.h"
 #include <iostream>
 
-PowerUp::PowerUp(const std::string& textureFile, float x, float y) {
+PowerUp::PowerUp(){}
+PowerUp::PowerUp(sf::Texture& powerUpTexture) {
     //  image ko directory texture file ma laijane path contrsut gareko 
-    std::string fullPath = "assets/" + textureFile; 
 
-    if (!texture.loadFromFile(fullPath)) {
-        std::cerr << "Failed to load image " << fullPath << std::endl;
-    }
-    sprite.setTexture(texture);
-    sprite.setPosition(x, y);
+    sprite.setTexture(powerUpTexture);
+    textureSize = powerUpTexture.getSize();
+    std::cout << textureSize.x;
+    sprite.setTexture(powerUpTexture);
+    sprite.rotate(270);
+    float x_position = static_cast<float>(rand() % (800 - 100)); // Random x within window width
+    float y_position = 300.f; 
+    sprite.setPosition(x_position, y_position);
+    sf::Vector2f spriteSize(100.0f, 100.0f); 
+    sprite.setScale(spriteSize.x / textureSize.x, spriteSize.y / textureSize.y);
+    powerUpTexture.setSmooth(true); // Optional: enables smoothing
+    powerUpTexture.setRepeated(false); // Ensure it's not being repeated    
+    
+
+
 }
-
 void PowerUp::render(sf::RenderWindow& window) const {
     
     window.draw(sprite);
+}
+
+void PowerUp::update(float deltaTime)
+{
+    if (sprite.getPosition().y > 600)
+    {
+        isOffScreen = true;
+    }
+    sprite.move(0, 100 * deltaTime);
 }
 
 sf::FloatRect PowerUp::getBounds() const {
