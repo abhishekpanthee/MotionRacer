@@ -1,8 +1,36 @@
 #include "Game.h"
+#include "GameState.h" 
+#include "Obstacle.h"
 #include <iostream>
 
-Game::Game() : playerCar("player_car.png"), speed(100.0f), obstacleSpawnTimer(0.0f), powerUpSpawnTimer(0.0f) {
+
+Game::Game() : playerCar("player_car.png"), speed(100.0f), obstacleSpawnTimer(0.0f), powerUpSpawnTimer(0.0f), obstacleSpawnInterval(3.0f), powerUpSpawnInterval(5.0f) {
     this->initWindow();
+    if (!obstacleTexture.loadFromFile("assets/obstacle.png"))
+    {
+        std::cerr << "Failed to load obstacle texture" << std::endl;
+    }
+    if (!powerUpTexture.loadFromFile("assets/powerup.png"))
+    {
+        std::cerr << "Failed to load power up texture" << std::endl;
+    }
+    if (!roadTexture.loadFromFile("assets/road.png"))
+    {
+        std::cerr << "Failed to load road texture" << std::endl;
+    }
+    roadSprite1.setTexture(roadTexture);
+    sf::Vector2u textureSize = roadTexture.getSize();
+    roadSprite1.setOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
+    roadSprite1.rotate(90);
+    roadSprite1.setPosition(400.f, 300.f);
+    roadSprite1.setScale(600.f / textureSize.x, 800.f / textureSize.y);
+
+    roadSprite2.setTexture(roadTexture);
+    roadSprite2.setOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
+    roadSprite2.rotate(90);
+    roadSprite2.setPosition(400.f, 300.f - 600.f);
+    roadSprite2.setScale(600.f / textureSize.x, 800.f / textureSize.y);
+
 }
 
 void Game::initWindow() {
@@ -18,9 +46,14 @@ void Game::processEvents() {
     }
 }
 
+
+
 void Game::update(float deltaTime) {
+ 
     playerCar.update(deltaTime);
-    speed += 0.1f * deltaTime;
+    roadSprite1.move(0, 100 * deltaTime);
+    roadSprite2.move(0, 100 * deltaTime);
+    speed += 0.05f * deltaTime;
 
     obstacleSpawnTimer += deltaTime;
     powerUpSpawnTimer += deltaTime;
@@ -28,50 +61,99 @@ void Game::update(float deltaTime) {
     spawnObstacles(deltaTime);
     spawnPowerUps(deltaTime);
 
-    playerCar.checkCollision(obstacles);
-    playerCar.checkCollision(powerUps);
+    for (auto& obstacle : activeObstacles)
+    {
+        obstacle.update(deltaTime);
+    }
+    for (auto& powerUp : activePowerUps)
+    {
+        powerUp.update(deltaTime);
+    }
+    
+
+    if (playerCar.checkCollision(activeObstacles))
+    {
+        this->window.clear();
+        currentState = GameState::GAME_OVER;
+    }
+    playerCar.checkCollision(activePowerUps);
 }
 
 void Game::render() {
+
+    this->window.draw(roadSprite1);
+    this->window.draw(roadSprite2);
     playerCar.render(this->window);
 
-    for (const auto& obstacle : obstacles) {
+    if (roadSprite1.getPosition().y >= 900.f) {
+        roadSprite1.setPosition(roadSprite2.getPosition().x, roadSprite2.getPosition().y - 600.f);
+    }
+
+    if (roadSprite2.getPosition().y >= 900.f) {
+        roadSprite2.setPosition(roadSprite1.getPosition().x, roadSprite1.getPosition().y - 600.f);
+    }
+
+    for (auto& obstacle : activeObstacles)
+    {
+
         obstacle.render(this->window);
     }
 
-    for (const auto& powerUp : powerUps) {
+    for (auto& powerUp : activePowerUps)
+    {
         powerUp.render(this->window);
     }
+    
 }
-
 void Game::spawnObstacles(float deltaTime) {
+    
     if (obstacleSpawnTimer >= obstacleSpawnInterval) {
-        obstacles.push_back(Obstacle("obstacle.png", rand() % 3 * 200, -100)); 
+        Obstacle obstacle(obstacleTexture);
         obstacleSpawnTimer = 0.0f;
+        activeObstacles.push_back(obstacle);
     }
 }
 
-void Game::spawnPowerUps(float deltaTime) {
+void Game::spawnPowerUps(float elapsedTime) {
+
+   
     if (powerUpSpawnTimer >= powerUpSpawnInterval) {
-        powerUps.push_back(PowerUp("powerup.png", rand() % 3 * 200, -100)); 
         powerUpSpawnTimer = 0.0f;
+        PowerUp powerup(powerUpTexture);
+        activePowerUps.push_back(powerup);
     }
 }
+
+void Game::reset_game()
+{
+    playerCar.sprite.setPosition(400.f , 500.f);
+    activeObstacles.clear();
+    activePowerUps.clear();
+    
+    obstacleSpawnTimer = 0.0f;
+    powerUpSpawnTimer = 0.0f;
+
+    frame_clock.restart();
+    score = 0;
+    
+}
+
 
 void Game::run() {
-        sf::Clock frame_clock;
+    
     sf::Clock game_clock;
-    GameState currentState = GameState::MENU;
+    currentState = GameState::MENU;
     while (this->window.isOpen())
     {
         float deltaTime = frame_clock.restart().asSeconds();
-        
-        this->processEvents();
         this->window.clear();
+        this->processEvents();
+
         switch (currentState)
         {
         case GameState::MENU:
         {
+            
             bool enterPressed = menu.updateMenu(this->window);
             menu.drawMenu(this->window);
             if (enterPressed)
@@ -92,6 +174,10 @@ void Game::run() {
                 }
                 else if (selected == 3)
                 {
+                    currentState = GameState::HIGH_SCORE;
+                }
+                else if (selected == 4)
+                {
                     this->window.close();
                 }
             }
@@ -100,12 +186,7 @@ void Game::run() {
         case GameState::PLAYING:
         {
             // Code/Functions for What to do when playing
-
-            //Time elapsed after the game started
-            float elapsedTime = game_clock.getElapsedTime().asSeconds();
-            
-            // Still Working on the implementation
-            this->update(deltaTime, elapsedTime);
+            this->update(deltaTime);
             this->render();
             break;
         }
@@ -117,6 +198,9 @@ void Game::run() {
         case GameState::GAME_OVER:
         {
             // Code/Functions For Game over
+            std::cout << "Game over!";
+            this->reset_game();
+            currentState = GameState::MENU;
             break;
         }
         case GameState::SETTINGS:
@@ -135,3 +219,4 @@ void Game::run() {
        
     }
 }
+
