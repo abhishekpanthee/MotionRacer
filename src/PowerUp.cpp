@@ -2,7 +2,7 @@
 #include <iostream>
 
 PowerUp::PowerUp(){}
-PowerUp::PowerUp(sf::Texture& powerUpTexture):isOffScreen{true} {
+PowerUp::PowerUp(sf::Texture& powerUpTexture):isOffScreen{false} {
     //  image ko directory texture file ma laijane path contrsut gareko 
 
     sprite.setTexture(powerUpTexture);
