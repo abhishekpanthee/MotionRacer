@@ -40,7 +40,6 @@ private:
 
 public:
     Game();
-    void display();
     void run();
 };
 
