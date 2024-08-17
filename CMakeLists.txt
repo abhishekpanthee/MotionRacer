@@ -19,6 +19,7 @@ add_executable(MotionRacer
     src/Main.cpp
     src/Obstacle.cpp
     src/PowerUp.cpp
+    src/Menu.cpp
 )
 
 target_link_libraries(MotionRacer
