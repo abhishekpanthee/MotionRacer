@@ -12,5 +12,5 @@ public:
     void update(float deltaTime);
     void render(sf::RenderWindow& window) const; 
     sf::FloatRect getBounds() const;
-    bool isOffScreen() const;
+    bool ifOffScreen() const;
 };
