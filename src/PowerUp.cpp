@@ -1,4 +1,4 @@
-#include "PowerUp.h"
+#include "../header/PowerUp.h"
 #include <iostream>
 
 PowerUp::PowerUp(){}
@@ -13,7 +13,7 @@ PowerUp::PowerUp(sf::Texture& powerUpTexture):isOffScreen{false} {
     float x_position = static_cast<float>(rand() % (800 - 100)); // Random x within window width
     float y_position = 300.f; 
     sprite.setPosition(x_position, y_position);
-    sf::Vector2f spriteSize(100.0f, 100.0f); 
+    sf::Vector2f spriteSize(50.0f, 50.0f); 
     sprite.setScale(spriteSize.x / textureSize.x, spriteSize.y / textureSize.y);
     powerUpTexture.setSmooth(true); // Optional: enables smoothing
     powerUpTexture.setRepeated(false); // Ensure it's not being repeated    
@@ -26,14 +26,18 @@ void PowerUp::render(sf::RenderWindow& window) const {
     window.draw(sprite);
 }
 
-void PowerUp::update(float deltaTime)
+
+bool PowerUp::update(float deltaTime)
 {
     if (sprite.getPosition().y > 600)
     {
-        isOffScreen = true;
+        return true;  // Indicate that the PowerUp should be deleted
     }
+
     sprite.move(0, 100 * deltaTime);
+    return false;  // Indicate that the PowerUp should not be deleted
 }
+
 
 sf::FloatRect PowerUp::getBounds() const {
     // tyo sprite le gareko lai bounded garako 
