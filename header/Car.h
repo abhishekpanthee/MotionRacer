@@ -35,4 +35,5 @@ public:
 
     friend class Game;
 };
+//end
 
