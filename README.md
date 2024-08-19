@@ -50,6 +50,7 @@ Follow these steps to set up and run the MotionRacer on your local machine:
 - C++ Compiler: Ensure you have a C++ compiler installed (e.g., GCC or Clang).
 - CMake: Required for building the project. Install it from CMake’s website.
 - SFML: The Simple and Fast Multimedia Library (SFML) is used for graphics, window management, and input handling.
+- Mediapipe: Required for handtracking and gesture recognition. 
 ### Installing SFML
  #### On Windows
 1. Download SFML:
@@ -70,6 +71,33 @@ Install SFML via apt :
 ```
 sudo apt-get install libsfml-dev
 ```
+### Installing Mediapipe
+1. Installing MediaPipe via pip
+The easiest way to install MediaPipe is through pip:
+```
+pip install mediapipe
+```
+2. Installing from Source (Optional)
+If you want to customize or contribute to MediaPipe, you can build and install it from source:
+
+```
+git clone https://github.com/google/mediapipe.git
+cd mediapipe
+```
+
+Install Dependencies:
+Make sure you have the following dependencies installed:
+
+OpenCV: Required to need to work with images and video streams:
+
+```
+pip install opencv-python
+
+```
+
+This will build a sample project to verify your installation.
+Before running make sure to use your ipaddress in hand_tracking_server.py file and Car.cpp file (intializeSocket() function)
+
 
 ## Clone the Repository
 Clone the Repository:
