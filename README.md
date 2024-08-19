@@ -95,8 +95,17 @@ pip install opencv-python
 
 ```
 
-This will build a sample project to verify your installation.
-Before running make sure to use your ipaddress in hand_tracking_server.py file and Car.cpp file (intializeSocket() function)
+Tor
+
+```
+ip addr show
+
+```
+Look for the inet field under your active network interface (usually eth0, wlan0, or en0). The address shown is your local IP.
+
+## Note:
+ Before running the cpp Project. You have to run the hand_tracking_server.py file on your command prompt for establishing connection. You may even have to change your port number in rare cases.
+n)
 
 
 ## Clone the Repository
