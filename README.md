@@ -77,7 +77,7 @@ The easiest way to install MediaPipe is through pip:
 ```
 pip install mediapipe
 ```
-2. Installing from Source (Optional)
+### Installing from Source (Optional)
 If you want to customize or contribute to MediaPipe, you can build and install it from source:
 
 ```
@@ -85,10 +85,10 @@ git clone https://github.com/google/mediapipe.git
 cd mediapipe
 ```
 
-Install Dependencies:
+## Install Dependencies:
 Make sure you have the following dependencies installed:
 
-OpenCV: Required to need to work with images and video streams:
+### OpenCV: Required to need to work with images and video streams:
 
 ```
 pip install opencv-python
@@ -105,27 +105,7 @@ Clone the Repository:
 git clone https://github.com/abhishekpanthee/MotionRacer.git
 cd MotionRacer
 ```
-### Build the Project
-Create a Build Directory:
-```
-mkdir build
-cd build
-```
-#### Generate Build Files with CMake:
 
-```
-cmake ..
-cmake --build .
-```
-### Compile the Project:
-
-```
-make
-```
-#### Run the Game
-```
-./MotionRacer
-```
 
 # Troubleshooting
 If you encounter errors related to SFML:
