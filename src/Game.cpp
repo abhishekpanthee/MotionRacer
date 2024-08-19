@@ -1,6 +1,6 @@
-#include "Game.h"
-#include "GameState.h" 
-#include "Obstacle.h"
+#include "../header/Game.h"
+#include "../header/GameState.h" 
+#include "../header/Obstacle.h"
 #include <iostream>
 
 
@@ -65,11 +65,18 @@ void Game::update(float deltaTime) {
     {
         obstacle.update(deltaTime);
     }
-    for (auto& powerUp : activePowerUps)
+   /* for (auto& powerUp : activePowerUps)
     {
         powerUp.update(deltaTime);
+    }*/
+    for (auto it = activePowerUps.begin(); it != activePowerUps.end(); ) {
+        if (it->update(deltaTime)) {
+            it = activePowerUps.erase(it);  // Delete the power-up if it went off-screen
+        }
+        else {
+            ++it;  // Move to the next power-up
+        }
     }
-    
 
     if (playerCar.checkCollision(activeObstacles))
     {
@@ -78,6 +85,14 @@ void Game::update(float deltaTime) {
     }
     playerCar.checkCollision(activePowerUps);
 }
+
+
+
+
+
+    
+
+
 
 void Game::render() {
 
@@ -219,4 +234,5 @@ void Game::run() {
        
     }
 }
+
 
