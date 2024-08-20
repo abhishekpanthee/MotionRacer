@@ -12,7 +12,7 @@ private:
 	sf::Text settings[2];
 	sf::Font font;
 	bool active = true;
-
+	int size;
 
 public: 
 	Menu();
