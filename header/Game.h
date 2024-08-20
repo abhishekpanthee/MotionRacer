@@ -11,9 +11,17 @@ private:
     sf::RenderWindow window;
     GameState currentState;
     Car playerCar;
+    sf::Font font;
+    // Texts for the various states.
+    sf::Text gameOverText;
+    sf::Text howToPLay;
+    sf::Text scoreText;
+    sf::Text highScoreText;
+
     sf::Texture obstacleTexture;
     sf::Texture powerUpTexture;
     sf::Texture roadTexture;
+
     sf::Sprite roadSprite1;
     sf::Sprite roadSprite2;
     std::vector<Obstacle> activeObstacles;
@@ -21,13 +29,14 @@ private:
     sf::Clock frame_clock;
     PowerUp powerUp;
     Menu menu;
-    float speed;
+    float speedFactor;
     float obstacleSpawnTimer;
     float powerUpSpawnTimer;
-    const float obstacleSpawnInterval = 2.0f;
-    const float powerUpSpawnInterval = 10.0f;
+    const float obstacleSpawnInterval;
+    const float powerUpSpawnInterval;
+    const float minDistance;
     int score;
-
+    int highScore;
 
     void initWindow();
     void processEvents();
@@ -36,6 +45,7 @@ private:
     void spawnObstacles(float);
     void spawnPowerUps(float);
     void reset_game();
+    float distance(sf::Vector2f pos1, sf::Vector2f pos2);
    
 
 public:
