@@ -71,6 +71,29 @@ Install SFML via apt :
 ```
 sudo apt-get install libsfml-dev
 ```
+### Installing Mediapipe
+### Installing MediaPipe via pip
+The easiest way to install MediaPipe is through pip:
+```
+pip install mediapipe
+```
+### Installing from Source (Optional)
+If you want to customize or contribute to MediaPipe, you can build and install it from source:
+
+```
+git clone https://github.com/google/mediapipe.git
+cd mediapipe
+```
+## Install Dependencies:
+Make sure you have the following dependencies installed:
+
+### OpenCV: Required to need to work with images and video streams:
+
+```
+pip install opencv-contrib-python
+
+```
+
 Before running make sure to use your ipaddress in hand_tracking_server.py file and Car.cpp file (intializeSocket() function)
 To view your IP Adress in local machine:
 ## Methods to View IP Address
