@@ -81,7 +81,7 @@ void Game::update(float deltaTime) {
     std::string score_str = std::to_string(score);
     scoreText.setString(score_str);
 
-    obstacleSpawnTimer += 3* deltaTime;
+    obstacleSpawnTimer += 5* deltaTime;
     powerUpSpawnTimer += 0.5 * deltaTime;
 
     spawnObstacles(deltaTime);
