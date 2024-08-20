@@ -38,6 +38,7 @@ private:
     int score;
     int highScore;
 
+
     void initWindow();
     void processEvents();
     void update(float deltaTime);
@@ -45,6 +46,10 @@ private:
     void spawnObstacles(float);
     void spawnPowerUps(float);
     void reset_game();
+ void loadHighScore(); // Load high score from a file
+ void saveHighScore(); // Save high score to a file
+ void updateScoreDisplay(); // Update the display of the score and high score
+ void resetHighScore(); // New method to reset high score to zero
     float distance(sf::Vector2f pos1, sf::Vector2f pos2);
    
 
