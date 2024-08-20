@@ -1,7 +1,7 @@
 #include "Menu.h"
 #include<iostream>
 
-Menu::Menu()
+Menu::Menu() : size{5}
 {
 	if (!font.loadFromFile("ARIAL.TTF"))
 	{
@@ -37,6 +37,27 @@ Menu::Menu()
 	selectedIndex = 0;
 }
 
+Menu::Menu(int a):selectedIndex{0} , size{2}
+{
+	if (!font.loadFromFile("ARIAL.TTF"))
+	{
+		std::cout << "Font not found";
+	}
+	int width = 300;
+	int height = 400;
+
+	settings[0].setFont(font);
+	settings[0].setFillColor(sf::Color::Red);
+	settings[0].setString("Music");
+	settings[0].setPosition(sf::Vector2f(width / 2, height / 3 * 1));
+
+	settings[1].setFont(font);
+	settings[1].setFillColor(sf::Color::White);
+	settings[1].setString("Gesture Mode");
+	settings[1].setPosition(sf::Vector2f(width / 2, height / 3 * 2));
+
+}
+
 bool Menu::updateMenu(sf::RenderWindow& window)
 {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
@@ -56,13 +77,25 @@ bool Menu::updateMenu(sf::RenderWindow& window)
 
 void Menu::drawMenu(sf::RenderWindow& window)
 {
-	for (int i = 0; i < 5; i++)
+	if (size == 5)
+{
+	for (int i = 0; i < size; i++)
 	{
 		window.draw(menu[i]);
 	}
 }
+else if (size == 2)
+{
+	for (int i = 0; i < size; i++)
+	{
+		window.draw(settings[i]);
+	}
+}
+}
 
 void Menu::moveUp()
+{
+	if (size == 5)
 {
 	if (selectedIndex - 1 >= 0)
 	{
@@ -71,15 +104,38 @@ void Menu::moveUp()
 		menu[selectedIndex].setFillColor(sf::Color::Red);
 	}
 }
+else if (size == 2)
+{
+	if (selectedIndex - 1 >= 0)
+	{
+		settings[selectedIndex].setFillColor(sf::Color::White);
+		selectedIndex--;
+		settings[selectedIndex].setFillColor(sf::Color::Red);
+	}
+}
+}
 
 void Menu::moveDown()
 {
-	if (selectedIndex + 1 < 5)
+	if (size == 5)
+{
+	if (selectedIndex + 1 < size)
 	{
 		menu[selectedIndex].setFillColor(sf::Color::White);
 		selectedIndex++;
 		menu[selectedIndex].setFillColor(sf::Color::Red);
 	}
+}
+else if (size == 2)
+{
+	if (selectedIndex + 1 < size)
+	{
+		settings[selectedIndex].setFillColor(sf::Color::White);
+		selectedIndex++;
+		settings[selectedIndex].setFillColor(sf::Color::Red);
+	}
+}
+	
 }
 
 int Menu::getClickedItem()
