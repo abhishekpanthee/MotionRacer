@@ -12,7 +12,6 @@ class Car {
 private:
     sf::Sprite sprite;
     sf::Texture texture;
-    float lanePosition;
 
     // Socket-related members
     SOCKET sockfd;             // Socket file descriptor (Windows-specific)
@@ -23,10 +22,16 @@ private:
 public:
     Car(const std::string& textureFile);
     ~Car();                    // Destructor to close the socket
+    bool isShieldActive;
+    float shieldTime;
+    float speed;
+
     void update(float deltaTime);
     void render(sf::RenderWindow& window);
     void moveLeft();
     void moveRight();
+     void moveUp(float deltaTime);
+     void moveDown(float deltaTime);
     void gmoveLeft();
     void gmoveRight();
     sf::FloatRect getBounds() const;
@@ -36,3 +41,4 @@ public:
     friend class Game;
 };
 //hello
+// hii
