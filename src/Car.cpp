@@ -154,7 +154,7 @@ bool Car::checkCollision(std::vector<PowerUp>& powerUps) {
         if (sprite.getGlobalBounds().intersects(it->getBounds())) {
             std::cout << "Collected power-up!" << std::endl;
 
-             this->activateShield(5.0f);
+             this->activateShield(6.9f);
             // Remove the power-up from the vector and update the iterator
             it = powerUps.erase(it);
             return true;
