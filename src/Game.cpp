@@ -18,6 +18,21 @@ Game::Game() : playerCar("player_car.png"), speedFactor(100.0f), obstacleSpawnTi
     {
         std::cerr << "Failed to load road texture" << std::endl;
     }
+    if (!font.loadFromFile("assets/arial.ttf")) { // Load a font for text
+    std::cerr << "Failed to load font" << std::endl;
+}
+
+scoreText.setFont(font);
+scoreText.setCharacterSize(24);
+scoreText.setFillColor(sf::Color::White);
+scoreText.setPosition(10.f, 10.f);
+
+highScoreText.setFont(font);
+highScoreText.setCharacterSize(24);
+highScoreText.setFillColor(sf::Color::White);
+highScoreText.setPosition(10.f, 40.f);
+
+loadHighScore(); // Load high score from file
     roadSprite1.setTexture(roadTexture);
     sf::Vector2u textureSize = roadTexture.getSize();
     roadSprite1.setOrigin(textureSize.x / 2.0f, textureSize.y / 2.0f);
@@ -51,6 +66,30 @@ Game::Game() : playerCar("player_car.png"), speedFactor(100.0f), obstacleSpawnTi
     scoreText.setPosition(700.f, 20.f);
 
 }
+void Game::loadHighScore() {
+    std::ifstream file("highscore.txt");
+    if (file.is_open()) {
+        file >> highScore;
+        std::cout << "High Score Loaded: " << highScore << std::endl;
+        file.close();
+    }
+    else {
+        highScore = 0;
+        std::cout << "No high score file found. Starting with high score: " << highScore << std::endl;
+    }
+}
+
+void Game::saveHighScore() {
+    std::ofstream file("highscore.txt");
+    if (file.is_open()) {
+        file << highScore;
+        std::cout << "High Score Saved: " << highScore << std::endl;
+        file.close();
+    }
+    else {
+        std::cerr << "Failed to open highscore.txt for saving." << std::endl;
+    }
+}
 
 void Game::initWindow() {
     this->window.create(sf::VideoMode(800, 600), "Car Racing Game");
@@ -60,6 +99,7 @@ void Game::processEvents() {
     sf::Event event;
     while (this->window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
+             resetHighScore();
             this->window.close();
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -68,11 +108,16 @@ void Game::processEvents() {
     }
     }
 }
+void Game::resetHighScore() {
+    highScore = 0;
+    saveHighScore();
+    std::cout << "High Score reset to zero and saved." << std::endl;
+}
 
 
 
 void Game::update(float deltaTime) {
- 
+      score += 1;
     playerCar.update(deltaTime);
     roadSprite1.move(0, 100 * deltaTime);
     roadSprite2.move(0, 100 * deltaTime);
@@ -86,6 +131,8 @@ void Game::update(float deltaTime) {
 
     spawnObstacles(deltaTime);
     spawnPowerUps(deltaTime);
+      score += static_cast<int>(deltaTime*25);
+  std::cout << "Current Score: " << score << std::endl;
 
     for (auto it = activeObstacles.begin(); it != activeObstacles.end();)
     {
@@ -124,6 +171,13 @@ void Game::update(float deltaTime) {
     }
 
 }
+void Game::updateScoreDisplay() {
+    scoreText.setString("Score: " + std::to_string(score));
+    highScoreText.setString("High Score: " + std::to_string(highScore));
+    std::cout << "Displayed Score: " << scoreText.getString().toAnsiString() << std::endl;
+    std::cout << "Displayed High Score: " << highScoreText.getString().toAnsiString() << std::endl;
+}
+
 
 
 void Game::render() {
@@ -152,6 +206,8 @@ void Game::render() {
     {
         powerUp.render(this->window);
     }
+      this->window.draw(scoreText); // Draw current score
+  this->window.draw(highScoreText); // Draw high score 
     
 }
 void Game::spawnObstacles(float deltaTime) {
@@ -233,6 +289,7 @@ float Game::distance(sf::Vector2f pos1, sf::Vector2f pos2)
 }
 
 void Game::run() {
+     loadHighScore();  // Ensure high score is loaded 
     sf::Clock game_clock;
 currentState = GameState::MENU;
 Menu settings(1);
