@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-Game::Game() : playerCar("player_car.png"), speed(100.0f), obstacleSpawnTimer(0.0f), powerUpSpawnTimer(0.0f), obstacleSpawnInterval(3.0f), powerUpSpawnInterval(5.0f) {
+Game::Game() : playerCar("player_car.png"), speedFactor(100.0f), obstacleSpawnTimer(0.0f), powerUpSpawnTimer(0.0f), obstacleSpawnInterval(3.0f), powerUpSpawnInterval(10.0f) , score{0}, highScore {0} , minDistance{100.0f} {
     this->initWindow();
     if (!obstacleTexture.loadFromFile("assets/obstacle.png"))
     {
@@ -31,6 +31,25 @@ Game::Game() : playerCar("player_car.png"), speed(100.0f), obstacleSpawnTimer(0.
     roadSprite2.setPosition(400.f, 300.f - 600.f);
     roadSprite2.setScale(600.f / textureSize.x, 800.f / textureSize.y);
 
+    gameOverText.setFont(font);
+    gameOverText.setString("GAME OVER :(");
+    gameOverText.setCharacterSize(48);
+    gameOverText.setFillColor(sf::Color::White);
+    gameOverText.setPosition(100.f, 100.f);
+    
+    howToPLay.setFont(font);
+    howToPLay.setString("Use the Arrow keys to move the car. Avoid obstacles, \n take powerups and try to survive as long as you can");
+    howToPLay.setCharacterSize(24);
+    howToPLay.setFillColor(sf::Color::White);
+    howToPLay.setPosition(50.f, 100.f);
+    
+    scoreText.setFont(font);
+    std::string score_str = std::to_string(score);
+    scoreText.setString(score_str);
+    scoreText.setCharacterSize(48);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(700.f, 20.f);
+
 }
 
 void Game::initWindow() {
@@ -43,6 +62,10 @@ void Game::processEvents() {
         if (event.type == sf::Event::Closed) {
             this->window.close();
         }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+    {
+        currentState = GameState::PAUSED;
+    }
     }
 }
 
@@ -53,22 +76,30 @@ void Game::update(float deltaTime) {
     playerCar.update(deltaTime);
     roadSprite1.move(0, 100 * deltaTime);
     roadSprite2.move(0, 100 * deltaTime);
-    speed += 0.05f * deltaTime;
+    
+    speedFactor += 10 * deltaTime;
+    std::string score_str = std::to_string(score);
+    scoreText.setString(score_str);
 
-    obstacleSpawnTimer += deltaTime;
-    powerUpSpawnTimer += deltaTime;
+    obstacleSpawnTimer += 3* deltaTime;
+    powerUpSpawnTimer += 0.5 * deltaTime;
 
     spawnObstacles(deltaTime);
     spawnPowerUps(deltaTime);
 
-    for (auto& obstacle : activeObstacles)
+    for (auto it = activeObstacles.begin(); it != activeObstacles.end();)
     {
-        obstacle.update(deltaTime);
+    it->update(deltaTime);
+    if (it->ifOffScreen())
+    {
+        it = activeObstacles.erase(it);
+        score++;
     }
-   /* for (auto& powerUp : activePowerUps)
+    else
     {
-        powerUp.update(deltaTime);
-    }*/
+        ++it;
+    }
+    }
     for (auto it = activePowerUps.begin(); it != activePowerUps.end(); ) {
         if (it->update(deltaTime)) {
             it = activePowerUps.erase(it);  // Delete the power-up if it went off-screen
@@ -81,23 +112,26 @@ void Game::update(float deltaTime) {
     if (playerCar.checkCollision(activeObstacles))
     {
         this->window.clear();
+         if (score >= highScore)
+         {
+         highScore = score;
+         }
         currentState = GameState::GAME_OVER;
     }
-    playerCar.checkCollision(activePowerUps);
+    if(playerCar.checkCollision(activePowerUps))
+    {
+        score += 2;
+    }
+
 }
-
-
-
-
-
-    
-
 
 
 void Game::render() {
 
     this->window.draw(roadSprite1);
     this->window.draw(roadSprite2);
+    this->window.draw(scoreText);
+    
     playerCar.render(this->window);
 
     if (roadSprite1.getPosition().y >= 900.f) {
@@ -122,21 +156,62 @@ void Game::render() {
 }
 void Game::spawnObstacles(float deltaTime) {
     
-    if (obstacleSpawnTimer >= obstacleSpawnInterval) {
-        Obstacle obstacle(obstacleTexture);
-        obstacleSpawnTimer = 0.0f;
-        activeObstacles.push_back(obstacle);
+   if (obstacleSpawnTimer >= obstacleSpawnInterval) {
+    bool validSpawn = true;
+    sf::Vector2f newPosition(rand() % 700, -50);  // Random X position, Y just above the screen
+
+    // Check against existing obstacles
+    for (const auto& obstacle : activeObstacles) {
+        if (distance(obstacle.getPosition(), newPosition) < minDistance) {
+            validSpawn = false;
+            break;
+        }
     }
+
+    // Check against existing power-ups
+    for (const auto& powerUp : activePowerUps) {
+        if (distance(powerUp.getPosition(), newPosition) < minDistance) {
+            validSpawn = false;
+            break;
+        }
+    }
+
+    if (validSpawn) {
+        Obstacle obstacle(obstacleTexture);
+        obstacle.setPosition(newPosition);
+        activeObstacles.push_back(obstacle);
+        obstacleSpawnTimer = 0.0f;
+    }
+}
 }
 
 void Game::spawnPowerUps(float elapsedTime) {
+    
+if (!playerCar.isShieldActive && powerUpSpawnTimer >= powerUpSpawnInterval) {
+    bool validSpawn = true;
+    sf::Vector2f newPosition(rand() % 700, -50);  // Random X position, Y just above the screen
 
-   
-    if (powerUpSpawnTimer >= powerUpSpawnInterval) {
-        powerUpSpawnTimer = 0.0f;
-        PowerUp powerup(powerUpTexture);
-        activePowerUps.push_back(powerup);
+    // Check against existing power-ups
+    for (const auto& powerUp : activePowerUps) {
+        if (distance(powerUp.getPosition(), newPosition) < minDistance) {
+            validSpawn = false;
+            break;
+        }
     }
+
+    for (const auto& obstacle : activeObstacles) {
+        if (distance(obstacle.getPosition(), newPosition) < minDistance) {
+            validSpawn = false;
+            break;
+        }
+    }
+    if (validSpawn) {
+        PowerUp powerup(powerUpTexture);
+        powerup.setPosition(newPosition);
+        activePowerUps.push_back(powerup);
+        powerUpSpawnTimer = 0.0f;
+    }
+}
 }
 
 void Game::reset_game()
@@ -150,89 +225,174 @@ void Game::reset_game()
 
     frame_clock.restart();
     score = 0;
-    
+    speedFactor = 100.0f;
+}
+float Game::distance(sf::Vector2f pos1, sf::Vector2f pos2)
+{
+    return sqrt(pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2));
 }
 
-
 void Game::run() {
-    
     sf::Clock game_clock;
-    currentState = GameState::MENU;
-    while (this->window.isOpen())
+currentState = GameState::MENU;
+Menu settings(1);
+sf::Event event;
+bool keyPressed = false;
+while (this->window.isOpen())
+{
+    float deltaTime = frame_clock.restart().asSeconds();
+    this->window.clear();
+    this->processEvents();
+
+    switch (currentState)
     {
-        float deltaTime = frame_clock.restart().asSeconds();
-        this->window.clear();
-        this->processEvents();
+    case GameState::MENU:
+    {
+        
+        bool enterPressed = menu.updateMenu(this->window);
+        menu.drawMenu(this->window);
+        if (enterPressed)
+        {
 
-        switch (currentState)
-        {
-        case GameState::MENU:
-        {
-            
-            bool enterPressed = menu.updateMenu(this->window);
-            menu.drawMenu(this->window);
-            if (enterPressed)
+            int selected = menu.getClickedItem();
+            if (selected == 0)
             {
-
-                int selected = menu.getClickedItem();
-                if (selected == 0)
+                currentState = GameState::PLAYING;
+            }
+            else if (selected == 1)
+            {
+                currentState = GameState::HOW_TO_PLAY;
+            }
+            else if (selected == 2)
+            {
+                currentState = GameState::SETTINGS;
+            }
+            else if (selected == 3)
+            {
+                currentState = GameState::HIGH_SCORE;
+            }
+            else if (selected == 4)
+            {
+                this->window.close();
+            }
+        }
+        break;
+    }
+    case GameState::PLAYING:
+    {
+        // Code/Functions for What to do when playing
+        this->update(deltaTime);
+        this->render();
+        break;
+    }
+    case GameState::PAUSED:
+    {
+        // Code/Functions for Paused Condition
+        
+       
+        sf::sleep(sf::milliseconds(200));
+        currentState = GameState::MENU;
+        break;
+    }
+    case GameState::GAME_OVER:
+    {
+        // Code/Functions For Game over
+        std::cout << "Game over!";
+        std::cout << "Score: " << score;
+        this->window.clear();
+        this->window.draw(gameOverText); 
+        this->window.display();
+        this->reset_game();
+        while (!keyPressed)
+        {
+            while (this->window.pollEvent(event))
+            {
+                if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed)
                 {
-                    currentState = GameState::PLAYING;
+                    keyPressed = true;
+                    break;
                 }
-                else if (selected == 1)
-                {
-                    currentState = GameState::HOW_TO_PLAY;
-                }
-                else if (selected == 2)
-                {
-                    currentState = GameState::SETTINGS;
-                }
-                else if (selected == 3)
-                {
-                    currentState = GameState::HIGH_SCORE;
-                }
-                else if (selected == 4)
+                else if (event.type == sf::Event::Closed)
                 {
                     this->window.close();
+                    keyPressed = true;  // Break loop if window is closed
                 }
             }
-            break;
         }
-        case GameState::PLAYING:
-        {
-            // Code/Functions for What to do when playing
-            this->update(deltaTime);
-            this->render();
-            break;
-        }
-        case GameState::PAUSED:
-        {
-            // Code/Functions for Paused Condition
-            break;
-        }
-        case GameState::GAME_OVER:
-        {
-            // Code/Functions For Game over
-            std::cout << "Game over!";
-            this->reset_game();
-            currentState = GameState::MENU;
-            break;
-        }
-        case GameState::SETTINGS:
-        {
-            // Code/Functions for settings
-            break;
-        }
-        case GameState::HOW_TO_PLAY:
-        {
-            // Code/Functions for how to play
-            break;
-        }
-        }
-           
-        this->window.display();
-       
+        sf::sleep(sf::milliseconds(200));
+        currentState = GameState::MENU;
+        break;
     }
+    case GameState::SETTINGS:
+    {
+        // Code/Functions for settings
+        bool enterPressed = settings.updateMenu(this->window);
+        settings.drawMenu(this->window);
+        //currentState = GameState::MENU;
+        break;
+    }
+    case GameState::HOW_TO_PLAY:
+    {
+        // Code/Functions for how to play
+       
+        this->window.clear();
+        this->window.draw(howToPLay);
+
+        while (!keyPressed)
+        {
+            while (this->window.pollEvent(event))
+            {
+                if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed)
+                {
+                    keyPressed = true;
+                    currentState = GameState::MENU;
+                    break;
+                }
+                else if (event.type == sf::Event::Closed)
+                {
+                    this->window.close();
+                    keyPressed = true;  // Break loop if window is closed
+                }
+            }
+        }
+        
+        break;
+    }
+
+    case GameState::HIGH_SCORE:
+    {
+        highScoreText.setFont(font);
+        std::string highScoreStr = std::to_string(highScore);
+        highScoreText.setString(highScoreStr);
+        highScoreText.setCharacterSize(48);
+        highScoreText.setFillColor(sf::Color::White);
+        highScoreText.setPosition(350.f, 400.f);
+        this->window.draw(highScoreText);
+
+        while (!keyPressed)
+        {
+            while (this->window.pollEvent(event))
+            {
+                if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed)
+                {
+                    keyPressed = true;
+                    currentState = GameState::MENU;
+                    break;
+                }
+                else if (event.type == sf::Event::Closed)
+                {
+                    this->window.close();
+                    keyPressed = true;  // Break loop if window is closed
+                }
+            }
+        }
+        
+    }
+    }
+       
+    this->window.display();
+   
+}
 }
 
 
