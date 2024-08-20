@@ -16,20 +16,35 @@ Car::Car(const std::string& textureFile) : lanePosition(1) {
     }
     sf::Vector2u textureSize = texture.getSize();
     sprite.setTexture(texture);
-    sprite.setPosition(400.f, 500.f);
+    sprite.setPosition(400.f, 450.f);
     initializeSocket();
     
 }
 
 void Car::update(float deltaTime) {
     // Check keyboard input
+
+    if (isShieldActive)
+    {
+    shieldTime -= deltaTime;
+    if (shieldTime <= 0.f)
+    {
+        isShieldActive = false;
+    }
+    }
+    
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        moveLeft();
+    moveLeft(deltaTime);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        moveRight();
+    moveRight(deltaTime);
     }
-
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+    moveUp(deltaTime);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+    moveDown(deltaTime);
+    }
     // Check gesture input from Python server
     char buffer[1024] = { 0 };
     int bytesReceived = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
@@ -68,23 +83,47 @@ void Car::update(float deltaTime) {
 
 
 void Car::render(sf::RenderWindow& window) {
+     //On taking powerup, shows the green circle.
+    if (isShieldActive) {
+     sf::CircleShape shieldCircle(50.f);  // Adjust radius as needed
+     shieldCircle.setFillColor(sf::Color(0, 255, 0, 128));  // Blue with transparency
+     shieldCircle.setPosition(sprite.getPosition().x - 25.f, sprite.getPosition().y - 25.f);
+     window.draw(shieldCircle);
+ }
     window.draw(sprite);
 }
 
-void Car::moveLeft() {
-  
-    if (sprite.getPosition().x - 1 >= 0) {
-        sprite.move(-4.0f, 0);
-    }
-
-   
-
+void Car::activateShield(float time)
+{
+    isShieldActive = true;
+    shieldTime = time;
 }
 
-void Car::moveRight() {
- 
-    if (sprite.getPosition().x  < 750) {
-        sprite.move(4.0f, 0);
+void Car::moveLeft(float deltaTime) {
+    
+    if (sprite.getPosition().x - 1 >= 0) {
+        sprite.move(-speed * deltaTime, 0);
+    }
+}
+
+void Car::moveRight(float deltaTime) {
+   
+    if (sprite.getPosition().x + sprite.getGlobalBounds().width < 800) {
+        sprite.move(speed * deltaTime, 0);
+    }
+}
+void Car::moveUp(float deltaTime)
+{
+   
+    if (sprite.getPosition().y - 1 >= 0) {
+        sprite.move(0, -speed * deltaTime);
+    }
+}
+void Car::moveDown(float deltaTime)
+{
+    
+    if (sprite.getPosition().y + sprite.getGlobalBounds().width < 530){
+        sprite.move(0, speed * deltaTime);
     }
 }
 
@@ -93,6 +132,11 @@ sf::FloatRect Car::getBounds() const {
 }
 
 bool Car::checkCollision(const std::vector<Obstacle>& obstacles) {
+    
+     if (isShieldActive)
+     {
+     return false;
+     }
     for (const auto& obstacle : obstacles) {
         if (sprite.getGlobalBounds().intersects(obstacle.getBounds())) {
             // gadi thokida hune kam 
@@ -105,14 +149,15 @@ bool Car::checkCollision(const std::vector<Obstacle>& obstacles) {
 }
 
 
-
 bool Car::checkCollision(std::vector<PowerUp>& powerUps) {
     for (auto it = powerUps.begin(); it != powerUps.end(); ) {
         if (sprite.getGlobalBounds().intersects(it->getBounds())) {
             std::cout << "Collected power-up!" << std::endl;
 
+             this->activateShield(5.0f);
             // Remove the power-up from the vector and update the iterator
             it = powerUps.erase(it);
+            return true;
         }
         else {
             ++it; // Only increment the iterator if no element was erased
