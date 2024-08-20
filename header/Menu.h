@@ -9,14 +9,15 @@ class Menu {
 private: 
 	int selectedIndex;
 	sf::Text menu[5];
+	sf::Text settings[2];
 	sf::Font font;
 	bool active = true;
 
 
 public: 
 	Menu();
-	
-    bool updateMenu(sf::RenderWindow& window);
+	Menu(int a);
+    	bool updateMenu(sf::RenderWindow& window);
 	void drawMenu(sf::RenderWindow& window);
 
 	void moveUp();
