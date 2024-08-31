@@ -39,8 +39,12 @@ In this game, you control a car that drives on a three-lane highway. The goal is
   [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=black)](https://www.linkedin.com/in/rhythm-bhetwal-957a7826a/)
     [![instagram](https://img.shields.io/badge/instagram-0A66C2?style=for-the-badge&logo=instagram&logoColor=black)](https://www.instagram.com/_rhythm_.exe/)
 
-- [@_sushil_bhatta](https://www.github.com)
+- [@_sushil_bhatta](https://www.github.com/Sushil-Bhatta-sb)
   [![instagram](https://img.shields.io/badge/instagram-0A66C2?style=for-the-badge&logo=instagram&logoColor=black)](https://www.instagram.com/_sushil_bhatta/)
+    [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=black)](https://www.linkedin.com/in/sushil-bhatt-67855b318/)
+
+
+
 
 
 ## Installation Instructions
@@ -140,6 +144,28 @@ Clone the Repository:
 ```
 git clone https://github.com/abhishekpanthee/MotionRacer.git
 cd MotionRacer
+```
+
+### Build the Project
+Create a Build Directory:
+```
+mkdir build
+cd build
+```
+#### Generate Build Files with CMake:
+
+```
+cmake ..
+cmake --build .
+```
+### Compile the Project:
+
+```
+make
+```
+#### Run the Game
+```
+./MotionRacer
 ```
 
 
