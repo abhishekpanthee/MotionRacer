@@ -1,9 +1,9 @@
-#include "Menu.h"
+#include "../header/Menu.h"
 #include<iostream>
 
 Menu::Menu() : size{5}
 {
-	if (!font.loadFromFile("ARIAL.TTF"))
+	if (!font.loadFromFile("../assets/ARIAL.TTF"))
 	{
 		std::cout << "Font not found";
 	}
@@ -39,7 +39,7 @@ Menu::Menu() : size{5}
 
 Menu::Menu(int a):selectedIndex{0} , size{2}
 {
-	if (!font.loadFromFile("ARIAL.TTF"))
+	if (!font.loadFromFile("../assets/ARIAL.TTF"))
 	{
 		std::cout << "Font not found";
 	}

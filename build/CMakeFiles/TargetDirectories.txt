@@ -1,0 +1,3 @@
+/home/abhi/school/MotionRacer/build/CMakeFiles/MotionRacer.dir
+/home/abhi/school/MotionRacer/build/CMakeFiles/edit_cache.dir
+/home/abhi/school/MotionRacer/build/CMakeFiles/rebuild_cache.dir

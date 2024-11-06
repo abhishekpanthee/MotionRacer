@@ -94,7 +94,7 @@ Make sure you have the following dependencies installed:
 ### OpenCV: Required to need to work with images and video streams:
 
 ```
-pip install opencv-contrib-python
+cd 
 
 ```
 

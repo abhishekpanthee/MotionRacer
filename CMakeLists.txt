@@ -4,7 +4,7 @@ project(MotionRacer)
 set(CMAKE_CXX_STANDARD 17)
 
 # Specify the path to SFML
-set(SFML_DIR "/usr/local/share/cmake/SFML") #make sure this is setup very correclty 
+set(SFML_DIR "/usr/local/share/cmake/SFML") #make sure this is set correctly
 # Adjust this path if necessary
 
 find_package(SFML 2.6 REQUIRED graphics window system)
@@ -13,6 +13,7 @@ find_package(SFML 2.6 REQUIRED graphics window system)
 include_directories(${SFML_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/include)
 link_directories(${SFML_LIBRARY_DIR})
 
+# Define the executable
 add_executable(MotionRacer
     src/Car.cpp
     src/Game.cpp
@@ -22,10 +23,12 @@ add_executable(MotionRacer
     src/Menu.cpp
 )
 
+# Link SFML libraries
 target_link_libraries(MotionRacer
     sfml-graphics
     sfml-window
     sfml-system
+    sfml-audio
 )
 
 # Specify the path to the assets folder
