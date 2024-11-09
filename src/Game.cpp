@@ -96,7 +96,7 @@ void Game::displayResumeButton() {
     resumeText.setString("Resume");
     resumeText.setCharacterSize(24);
     resumeText.setFillColor(sf::Color::White);
-    resumeText.setPosition(300, 50);     // Set position on the screen
+    resumeText.setPosition(300, 30);     // Set position on the screen
 
     // Create a rectangle to enclose the "Resume" text
     sf::FloatRect textBounds = resumeText.getLocalBounds();  // Get the bounds of the text
@@ -669,7 +669,7 @@ void Game::run() {
     // Team members' names below
     sf::Text namesText;
     namesText.setFont(font);
-    namesText.setString("\n\n Abhishek Panthee\n\n Sulav Paudel\n\n Rhythem Bhetwal \n\n Sushil Bhatta");
+    namesText.setString("\n\n Abhishek Panthee\n\n Sulav Paudel\n\n Rhythm Bhetwal \n\n Sushil Bhatta");
     namesText.setCharacterSize(32);
     namesText.setFillColor(sf::Color::Blue);
     namesText.setPosition(window.getSize().x / 2.0f - namesText.getGlobalBounds().width / 2.0f, 150);
@@ -757,7 +757,7 @@ case GameState::PAUSED: {
         howToPlayMain.setFont(font);
         howToPlayMain.setString(
             "\n\n"
-            " \t\t\t So you are confused ? "
+            " \t So you are confused ? "
             " See how Controls work :\n"
             "- Use the Arrow keys to Control:\n"
             "  Up Arrow: Move forward\n"
