@@ -370,7 +370,7 @@ void Game::saveHighScore(const std::string& username) {
 
 
 void Game::initWindow() {
-    this->window.create(sf::VideoMode(800, 600), "Car Racing Game");
+    this->window.create(sf::VideoMode(800, 600), "MotionRacer");
 }
 
 void Game::processEvents() {
@@ -419,10 +419,10 @@ void Game::update(float deltaTime) {
     scoreText.setPosition(9.f, 9.f);
 
 
-    obstacleSpawnTimer +=  speedIncreaseTimer*deltaTime;
+    obstacleSpawnTimer +=  0.5*deltaTime;
     powerUpSpawnTimer += 0.5 * deltaTime;
 
-    spawnObstacles(speedFactor);
+    spawnObstacles(deltaTime);
     spawnPowerUps(deltaTime);
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
@@ -627,13 +627,15 @@ void Game::run() {
         if (selected == 0) {
             currentState = GameState::PLAYING;
         } else if (selected == 1) {
-            currentState = GameState::HOW_TO_PLAY;  // Correctly transition to HOW_TO_PLAY
+            currentState = GameState::HOW_TO_PLAY;
         } else if (selected == 2) {
             currentState = GameState::SETTINGS;
         } else if (selected == 3) {
             currentState = GameState::HIGH_SCORE;
-        } else if (selected == 4) {
+        } else if (selected == 5) {
             this->window.close();
+        } else if (selected == 4) {
+            currentState = GameState::CREDITS;
         }
     }
     break;
@@ -654,6 +656,36 @@ void Game::run() {
             this->render();
             break;
         }
+        case GameState::CREDITS: {
+    // Title "Created by" in bold red
+    sf::Text createdByText;
+    createdByText.setFont(font);
+    createdByText.setString("Created by");
+    createdByText.setCharacterSize(48);
+    createdByText.setFillColor(sf::Color::Red);
+    createdByText.setStyle(sf::Text::Bold);
+    createdByText.setPosition(window.getSize().x / 2.0f - createdByText.getGlobalBounds().width / 2.0f, 100);
+
+    // Team members' names below
+    sf::Text namesText;
+    namesText.setFont(font);
+    namesText.setString("\n\n Abhishek Panthee\n\n Sulav Paudel\n\n Rhythem Bhetwal \n\n Sushil Bhatta");
+    namesText.setCharacterSize(32);
+    namesText.setFillColor(sf::Color::Blue);
+    namesText.setPosition(window.getSize().x / 2.0f - namesText.getGlobalBounds().width / 2.0f, 150);
+
+    // Draw the credits
+    window.draw(createdByText);
+    window.draw(namesText);
+
+    // Return to menu on escape key
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+        currentState = GameState::MENU;
+    }
+
+    break;
+}
+
 
        case GameState::HOW_TO_PLAY: {
     // Display the "How to Play" instructions text

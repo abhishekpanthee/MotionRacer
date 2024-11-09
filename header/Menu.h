@@ -13,6 +13,7 @@ private:
 	sf::Font font;
 	bool active = true;
 	int size;
+	 sf::Text footerText;
 
 public: 
 	Menu();

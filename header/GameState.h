@@ -6,5 +6,6 @@ enum class GameState {
 	GAME_OVER,
 	SETTINGS,
 	HOW_TO_PLAY,
-	HIGH_SCORE
+	HIGH_SCORE,
+	CREDITS
 };
