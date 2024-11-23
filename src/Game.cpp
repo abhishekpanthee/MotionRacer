@@ -419,8 +419,8 @@ void Game::update(float deltaTime) {
     scoreText.setPosition(9.f, 9.f);
 
 
-    obstacleSpawnTimer +=  0.5*deltaTime;
-    powerUpSpawnTimer += 0.5 * deltaTime;
+    obstacleSpawnTimer +=  3.5*deltaTime;
+    powerUpSpawnTimer += 1 * deltaTime;
 
     spawnObstacles(deltaTime);
     spawnPowerUps(deltaTime);
